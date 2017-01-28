@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <title>Notebook app</title>
+    </head>
+
+    <body>
+        <h1>My notes</h1>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Author</th>
+                    <th>Title</th>
+                    <th>Public/Private</th>
+                    <th colspan="2"></th>
+                </tr>
+            </thead>
+
+            <tbody th:if="${#lists.isEmpty(notes)}">
+                <tr>
+                    <td colspan="5">You do not have any notes yet.</td>
+                </tr>
+            </tbody>
+            <tbody th:each="note : ${notes}">
+                <tr>
+                    <td th:text="${note.account.username}">Note author</td>
+                    <td><a th:text="${note.title}" th:href="@{|/viewnote/${note.id}|}"></a></td>
+                    <td th:if="${note.publicNote}">Public</td>
+                    <td th:unless="${note.publicNote}">Private</td>
+                    <td><form th:action="@{|/editnote/${note.id}|}" method="GET"><input type="submit" value="Edit"/></form></td>
+                    <td><form th:action="@{/deletenote}" method="POST"><input type="hidden" id="noteId" name="noteId" th:value="${note.id}"/><input type="submit" value="Delete"/></form></td>
+                </tr>
+            </tbody>
+        </table>
+        
+        <form th:action="@{/write}" method="GET">
+            <input type="submit" value="Write a new note"/>
+        </form>
+        
+        <form th:action="@{/}" method="GET">
+            <input type="submit" value="View latest public notes"/>
+        </form>
+        
+        <form th:action="@{/login?logout}" method="GET">
+            <input type="submit" value="Logout"/>
+        </form>
+
+    </body>
+</html>

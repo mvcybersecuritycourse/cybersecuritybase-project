@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <title>Notebook app</title>
+    </head>
+
+    <body>
+        <h1>Edit a note</h1>        
+        <form name="editNote" th:action="@{|/editnote/${note.id}|}" method="post">
+            <fieldset>
+                <legend>Edit note</legend>
+                <label for="title">Title</label>
+                <input type="text" id="title" name="title" th:value="*{note.title}"/>
+                <label for="text">Text</label>
+                <textarea name="text" id="text" rows="10" cols="30" th:inline="text">[[${note.text}]]</textarea>
+                <label for="publicnote">Public</label>
+                <input type="checkbox" name="publicnote" id="publicnote" value="publicnote" th:checked="${note.publicNote}"/>
+                <div class="form-actions">
+                    <button type="submit" class="btn" name="action" value="save">Save</button>
+                </div>
+                <div class="form-actions">
+                    <button type="submit" class="btn" name="action" value="cancel">Cancel</button>
+                </div>
+            </fieldset>
+        </form>
+        
+        <form th:action="@{/mynotes}" method="GET">
+            <input type="submit" value="View my notes"/>
+        </form>
+        
+        <form th:action="@{/}" method="GET">
+            <input type="submit" value="View latest public notes"/>
+        </form>
+        
+        <form th:action="@{/login?logout}" method="GET">
+            <input type="submit" value="Logout"/>
+        </form>
+        
+    </body>
+</html>

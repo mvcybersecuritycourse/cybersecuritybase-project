@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <title>Notebook app</title>
+    </head>
+
+    <body>
+        <h1>View a single note</h1>
+
+        <div th:unless="${note != null}">Requested note was not found.</div>
+        
+        <div th:if="${note != null}">
+            <div th:unless="${note != null}">Requested note was not found.</div>
+            <div><p>Title:</p>
+                <div th:if="${note != null}" th:text="${note.title}">Note title</div>
+            </div>
+            <div><p>Text:</p>
+                <!--/* Use th:utext to print unescaped text, introducing risk of XSS */-->
+                <!--/* Fix will be to change th:utext to th:text */-->
+                <div th:if="${note != null}" th:utext="${note.text}">Note Text</div>
+            </div>
+        </div>
+
+        <form th:action="@{/write}" method="GET">
+            <input type="submit" value="Write a new note"/>
+        </form>
+
+        <form th:action="@{/mynotes}" method="GET">
+            <input type="submit" value="View my notes"/>
+        </form>
+
+        <form th:action="@{/}" method="GET">
+            <input type="submit" value="View latest public notes"/>
+        </form>
+
+        <form th:action="@{/login?logout}" method="GET">
+            <input type="submit" value="Logout"/>
+        </form>
+
+    </body>
+</html>

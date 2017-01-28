@@ -1,0 +1,119 @@
+
+This project implements a web application "Notebook app".
+With Notebook app registered users can write, edit and delete their own notes.
+Note can be set private when only the author can view the note, or public, when all registered users can view the note.
+Notes can only be edited or deleted by their authors, not by other registered users.
+
+The application has two registered users set up as with following credentials:
+User 1 username: ted
+User 1 password: ted
+User 2 username: mister
+User 2 password: president
+
+With "Notebook app" this project demonstrates these five flaws from OWASP Top10 2013 list:
+A3-Cross-Site Scripting (XSS)
+A4-Insecure Direct Object References
+A5-Security Misconfiguration
+A7-Missing Function Level Access Control
+A8-Cross-Site Request Forgery (CSRF)
+
+
+
+Issue: Cross-Site Scripting(XSS)
+Steps to reproduce:
+1. Log in as either user
+2. Click on "Write a new note" button
+3. In "Title" field enter anything, for example "XSS flaw test"
+4. In "Text" field write a malicious script, for example <script type="text/javascript">alert("pwned!");</script>
+5. Check the "Public" checkbox
+6. Click on "Save" button
+7. Click on "Latest public notes" button
+8. Find the note you just saved from the public notes list and click on the title hyperlink
+9. Javascript alert should be displayed
+
+Steps to fix the issue:
+Open viewnote.html from resources/templates directory.
+There are comments in viewnote.html on how to make thymeleaf output escaped text instead of unescaped text.
+When th:utext is changed to th:text the issue is solved.
+
+
+
+Issue: Insecure Direct Object References
+Steps to reproduce:
+1. Log in as user ted
+2. Click on "Write new note" button
+3. Write anything you like in "Title" and "Text" fields
+4. Make sure to uncheck the "public" checkbox so the new note will be private
+5. Click on "Save" button
+6. New note should be displayed as private in "My notes" list
+7. Write down the note id of the note you just saved. Note id can be found as part of url in the title hyperlink. Just place your mouse over the link or use developer tools.
+8. Log out
+9. Log in as user mister
+10. Type in browser address line http://localhost:8080/viewnote/9 where 9 is the note id you wrote down in step 7
+11. You should now see user ted's private note even though you are logged in as user mister
+
+Steps to fix the issue:
+Open NotebookController.java and find method viewNote.
+That method is missing a check if current user is actually authorized to view the requested note.
+Fix is described in code comments.
+
+
+
+Issue: Security Misconfiguration
+Steps to reproduce:
+1. Log in as either user
+2. Type in browser address line http://localhost:8080/viewnote/a
+3. Error page with stack trace should be displayed
+
+Steps to fix this issue:
+Open CustomErrorController.java and find method handleError.
+That method is passing the exception to the view error.html.
+Fix will be to either not pass the exception from handleError method or to not display the stack trace in error.html.
+There are related comments in both CustomErrorController.java and error.html.
+
+
+
+Issue: Missing Function Level Access Control
+Steps to reproduce:
+1. Log in as user ted
+2. Click on "Write a new note" button
+3. Write anything you like in "Title" and "Text" fields, check the "Public" checkbox
+4. Click "Save" button
+5. Write down the note id of the note you just saved. Note id can be found as part of url in the title hyperlink. Just place your mouse over the link or use developer tools.
+6. Log out
+7. Log in as user mister
+8. Click on "View my notes" button
+9. Select any note on the "My notes" list and click "Edit" button
+10. Use your browsers' developer tools to modify the form action url. Replace current note id in the url with the note id you wrote down in step 5.
+11. Do some changes to "Title" and "Text" fields and make sure that "Public" checkbox is checked.
+12. Click "Save".
+13. Click on "View latest public notes" button.
+14. User ted's note should be displayed as modified.
+
+Steps to fix this issue:
+Open NotebookController.java and find method saveEditedNote.
+In that method there is no check if user is allowed to modify the note.
+There are comments in the code that describe what needs to be changed in order to fix the issue.
+
+
+
+Issue: Cross-Site Request Forgery (CSRF)
+Steps to reproduce:
+1. Log in as either user
+2. Click on "Write a new note" button
+3. Write anything you like in "Title" and "Text" fields, check the "Public" checkbox
+4. Click "Save" button
+5. Write down the note id of the note you just saved. Note id can be found as part of url in the title hyperlink. Just place your mouse over the link or use developer tools.
+6. From the source packages find html file deletenoteviacsrf.html and copy it locally somewhere where you will able to open it
+7. Open deletenoteviacsrf.html in another tab of the same browser where you are running the Notebook app
+8. Enter the note id you wrote down in step 5 to deletenoteviacsrf.html input field and click "Try it" button
+9. Click on "View latest public notes" button in Notebook app
+10. The note that you saved in step 4 should have been deleted
+
+Steps to fix the issue:
+Open SecurityConfiguration.java and find method configure.
+In that method there is a line that disables the default CSRF protection of Spring and Thymeleaf.
+Removing that line will fix the issue.
+
+
+

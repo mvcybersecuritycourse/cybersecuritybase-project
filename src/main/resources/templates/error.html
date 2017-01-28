@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <title>Notebook app</title>
+    </head>
+
+    <body>
+        <h1>Notebook error</h1>
+
+        <div>Something went wrong. Sorry.</div>
+        
+        <div th:if="${url != null}" th:inline="text">[[${url}]]</div>
+        <!--/* It is not generally a good idea to print out the stack trace. 
+               So the following lines where exception.message and exception.stackTrace are printed should be left out completely. */-->
+        <div th:if="${exception != null}" th:inline="text">[[${exception.message}]]</div>
+        <div th:if="${exception != null and exception.stackTrace != null}">
+            <div th:each="traceline : ${exception.stackTrace}">
+                <p th:inline="text">[[${traceline}]]</p>
+            </div>
+        </div>
+        
+        <form th:action="@{/write}" method="GET">
+            <input type="submit" value="Write a new note"/>
+        </form>
+        
+        <form th:action="@{/mynotes}" method="GET">
+            <input type="submit" value="View my notes"/>
+        </form>
+        
+        <form th:action="@{/}" method="GET">
+            <input type="submit" value="View latest public notes"/>
+        </form>
+        
+        <form th:action="@{/login?logout}" method="GET">
+            <input type="submit" value="Logout"/>
+        </form>
+
+    </body>
+</html>

@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <title>Notebook app</title>
+    </head>
+
+    <body>
+        <h1>Public notes, search results</h1>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Author</th>
+                    <th>Title</th>
+                </tr>
+            </thead>
+
+            <tbody th:each="note : ${notes}">
+                <tr>
+                    <td th:text="${note.account.username}">Note author</td>
+                    <td><a th:text="${note.title}" th:href="@{|/viewnote/${note.id}|}"></a></td>
+                </tr>
+            </tbody>
+        </table>
+        
+        <form th:action="@{/write}" method="GET">
+            <input type="submit" value="Write a new note"/>
+        </form>
+        
+        <form th:action="@{/mynotes}" method="GET">
+            <input type="submit" value="View my notes"/>
+        </form>
+        
+        <form th:action="@{/}" method="GET">
+            <input type="submit" value="View latest public notes"/>
+        </form>
+        
+        <form th:action="@{/login?logout}" method="GET">
+            <input type="submit" value="Logout"/>
+        </form>
+
+        <form th:action="@{/search}" method="POST">
+            <input type="text" name="searchterm" id="searchterm" />
+            <input type="submit" value="Search from title"/>
+        </form>
+
+    </body>
+</html>

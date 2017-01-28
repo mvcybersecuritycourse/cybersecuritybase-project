@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <title>Notebook app</title>
+    </head>
+
+    <body>
+        <h1>Write a new note</h1>        
+        <form name="writeNote" th:action="@{/write}" method="post">
+            <fieldset>
+                <legend>Write a new note</legend>
+                <div th:if="${param.error}" class="alert alert-error">
+                    Invalid username and password.
+                </div>
+                <div th:if="${param.logout}" class="alert alert-success">
+                    You have been logged out.
+                </div>
+                <label for="title">Title</label>
+                <input type="text" id="title" name="title"/>
+                <br/>
+                <label for="text">Text</label>
+                <textarea name="text" id="text" rows="10" cols="30"/>
+                <label for="publicnote">Public</label>
+                <input type="checkbox" name="publicnote" id="publicnote" value="publicnote"/>
+                <div class="form-actions">
+                    <button type="submit" class="btn">Save</button>
+                </div>
+            </fieldset>
+        </form>
+        
+        <form th:action="@{/mynotes}" method="GET">
+            <input type="submit" value="View my notes"/>
+        </form>
+        
+        <form th:action="@{/}" method="GET">
+            <input type="submit" value="View latest public notes"/>
+        </form>
+        
+        <form th:action="@{/login?logout}" method="GET">
+            <input type="submit" value="Logout"/>
+        </form>
+        
+    </body>
+</html>
